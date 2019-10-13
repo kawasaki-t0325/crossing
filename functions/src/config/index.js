@@ -1,0 +1,5 @@
+exports.RESPONSE_CODE = {
+  BAD_REQUEST: 400,
+
+  SERVER_ERROR: 500,
+};
