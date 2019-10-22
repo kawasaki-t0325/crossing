@@ -3,6 +3,7 @@ const puppeteer = require('puppeteer');
 const config = require('../config');
 const A8 = require('../sites/a8');
 const Moshimo = require('../sites/moshimo');
+const Afb = require('../sites/afb');
 
 module.exports = async (site, username, password, word) => {
   const siteInfo = fetchSiteInfo(site);
@@ -21,8 +22,9 @@ module.exports = async (site, username, password, word) => {
       page.click(siteInfo.loginButton),
     ]);
 
-    // TODO: login失敗時の処理について考える
-    await page.waitForSelector(siteInfo.searchButton);
+    await page.waitForSelector(siteInfo.searchButton).catch(() => {
+      throw { code: config.RESPONSE_CODE.UNAUTHORIZED, error: '認証に失敗しました' }
+    });
 
     await page.type(siteInfo.searchBox, word);
     Promise.all([
@@ -30,12 +32,14 @@ module.exports = async (site, username, password, word) => {
       page.click(siteInfo.searchButton),
     ]);
 
-    await page.waitForSelector(siteInfo.selector);
+    await page.waitForSelector(siteInfo.selector, { timeout: 3000 }).catch(() => {
+      throw { code: config.RESPONSE_CODE.NOT_FOUND, error: '商品が見つかりませんでした' }
+    });
 
     const result = await page.$eval(siteInfo.selector, element => element.textContent);
     return siteInfo.formatForResponse(result);
   } catch (error) {
-    throw { code: config.RESPONSE_CODE.SERVER_ERROR, error: 'サーバーエラーが発生しました' };
+    throw ('code' in error) ? error : { code: config.RESPONSE_CODE.SERVER_ERROR, error: 'サーバーエラーが発生しました' };
   }
 };
 
@@ -51,6 +55,8 @@ const fetchSiteInfo = id => {
       return new A8();
     case config.SITE.MOSHIMO:
       return new Moshimo();
+    case config.SITE.AFB:
+      return new Afb();
     default:
       throw { code: config.RESPONSE_CODE.SERVER_ERROR, error: 'サーバーエラーが発生しました' };
   }
