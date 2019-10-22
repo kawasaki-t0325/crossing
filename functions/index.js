@@ -10,6 +10,6 @@ const runtimeOpts = {
 };
 
 exports.searchItem = functions.region('asia-northeast1').runWith(runtimeOpts).https.onRequest(async (request, response) => {
-  const result = await searchItem(request.body).catch(({ error, code }) => response.status(code).send(error));
-  response.status(200).send(result);
+  const result = await searchItem(request.body).catch(({ error, code }) => response.json({ code: code, message: error }));
+  response.json({ code: 200, count: result });
 });
