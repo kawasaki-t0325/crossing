@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   makeStyles,
   Container,
@@ -37,20 +37,48 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const asps = [
-  {
-    title: 'A8.net',
-  },
-  {
-    title: 'afb',
-  },
-  {
-    title: 'もしもアフィリエイト',
-  },
-];
-
 function App() {
   const classes = useStyles();
+  const [value, setValue] = useState({
+    usernameA8: '',
+    passwordA8: '',
+    usernameAfb: '',
+    passwordAfb: '',
+    usernameMoshimo: '',
+    passwordMoshimo: '',
+  });
+  const [word, setWord] = useState('');
+
+  const asps = [
+    {
+      title: 'A8.net',
+      usernameKey: 'usernameA8',
+      passwordKey: 'passwordA8',
+      username: value.usernameA8,
+      passwordA8: value.passwordA8,
+    },
+    {
+      title: 'afb',
+      usernameKey: 'usernameAfb',
+      passwordKey: 'passwordAfb',
+      username: value.usernameAfb,
+      password: value.passwordAfb,
+    },
+    {
+      title: 'もしもアフィリエイト',
+      usernameKey: 'usernameMoshimo',
+      passwordKey: 'passwordMoshimo',
+      username: value.usernameMoshimo,
+      password: value.passwordMoshimo,
+    },
+  ];
+
+  const changeText = event => {
+    setValue({
+      ...value,
+      [event.target.name]: event.target.value
+    })
+  };
 
   return (
     <React.Fragment>
@@ -59,11 +87,11 @@ function App() {
       </Container>
       <Container className={classes.main} component="main">
         <Grid container spacing={5} justify="center">
-          {asps.map(tier => (
-            <Grid item key={tier.title} xs={12} sm={tier.title === 'Enterprise' ? 12 : 6} md={4}>
+          {asps.map(asp => (
+            <Grid item key={asp.title} xs={12} sm={6} md={4}>
               <Card>
                 <CardHeader
-                  title={tier.title}
+                  title={asp.title}
                   titleTypographyProps={{ align: 'center' }}
                 />
                 <CardContent>
@@ -72,12 +100,18 @@ function App() {
                     margin="normal"
                     fullWidth
                     placeholder="ユーザー名"
+                    name={asp.usernameKey}
+                    value={value.username}
+                    onChange={changeText}
                   />
                   <TextField
                     variant="outlined"
                     margin="normal"
                     fullWidth
                     placeholder="パスワード"
+                    name={asp.passwordKey}
+                    value={value.password}
+                    onChange={changeText}
                   />
                 </CardContent>
               </Card>
@@ -91,6 +125,8 @@ function App() {
               fullWidth
               autoFocus
               placeholder="検索商品"
+              value={word}
+              onChange={event => setWord(event.target.value)}
             />
             <Button className={classes.button} variant="contained" color="primary">
               検索する
