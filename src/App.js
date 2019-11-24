@@ -10,6 +10,8 @@ import {
   CardContent,
   Button
 } from "@material-ui/core";
+import httpRequest from './modules/httpRequest';
+import { SITE_IDS } from './config';
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -73,11 +75,18 @@ function App() {
     },
   ];
 
+  const search = async () => {
+    const { usernameA8, usernameMoshimo, usernameAfb, passwordA8, passwordMoshimo, passwordAfb } = value;
+    const a8Result = await httpRequest.httpRequest(SITE_IDS.A8, word, usernameA8, passwordA8);
+    const afbResult = await httpRequest.httpRequest(SITE_IDS.A8, word, usernameAfb, passwordAfb);
+    const moshimoResult =  await httpRequest.httpRequest(SITE_IDS.A8, word, usernameMoshimo, passwordMoshimo);
+  };
+
   const changeText = event => {
     setValue({
       ...value,
       [event.target.name]: event.target.value
-    })
+    });
   };
 
   return (
@@ -105,6 +114,7 @@ function App() {
                     onChange={changeText}
                   />
                   <TextField
+                    type="password"
                     variant="outlined"
                     margin="normal"
                     fullWidth
@@ -128,7 +138,7 @@ function App() {
               value={word}
               onChange={event => setWord(event.target.value)}
             />
-            <Button className={classes.button} variant="contained" color="primary">
+            <Button className={classes.button} variant="contained" color="primary" onClick={search}>
               検索する
             </Button>
           </div>
