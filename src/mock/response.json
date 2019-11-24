@@ -1,0 +1,19 @@
+{
+  "searchItem": {
+    "code": 200,
+    "count": 3,
+    "message": "商品が見つかりました",
+    "product": [
+      {
+        "name": "productA",
+        "url": "http://productA.com",
+        "price": 1000
+      },
+      {
+        "name": "productB",
+        "url": "http://productB.com",
+        "price": 2000
+      }
+    ]
+  }
+}
