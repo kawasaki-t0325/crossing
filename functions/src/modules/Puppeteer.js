@@ -47,7 +47,7 @@ module.exports = async (site, username, password, word) => {
     }
 
     return await page.evaluate((count, selector) => {
-      const programs = Array.from(document.querySelectorAll(selector.program));
+      const programs = Array.from(document.querySelectorAll(selector.program)).filter((content, index) => index < 5);
       const rewards = Array.from(document.querySelectorAll(selector.reward)).filter(content => !RegExp('-').test(content.textContent));
       const urls = Array.from(document.querySelectorAll(selector.url));
       const result = {
