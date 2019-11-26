@@ -11,6 +11,11 @@ module.exports = class Afb {
     this.searchButton = 'input[type="submit"]';
     // 取得項目
     this.countSelector = '#pagination > div.pagination.clearFix > span > span';
+    this.dataSelector = {
+      program: '#pagination > form > div > div.promotion_head.clearFix > div > h5:last-of-type',
+      url: '#pagination > form > div > div.promotion_head.clearFix > ul a[href^="/pa/promolist/?s"]',
+      reward: '#pagination > form > div > div.promotion_contents > table:nth-child(1) > tbody > tr:nth-child(2) > td',
+    };
   }
 
   /**

@@ -44,7 +44,7 @@ module.exports = async (site, username, password, word) => {
 
     return await page.evaluate((count, selector) => {
       const programs = Array.from(document.querySelectorAll(selector.program));
-      const rewards = Array.from(document.querySelectorAll(selector.reward));
+      const rewards = Array.from(document.querySelectorAll(selector.reward)).filter(content => !RegExp('-').test(content.textContent));
       const urls = Array.from(document.querySelectorAll(selector.url));
       const result = {
         count: count,

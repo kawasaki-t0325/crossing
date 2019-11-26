@@ -11,6 +11,11 @@ module.exports = class Moshimo {
     this.searchButton = '.search-button > a';
     // 取得項目
     this.countSelector = 'span.found-rows';
+    this.dataSelector = {
+      program: '#promotion-affiliate-form > table > tbody > tr > td.promotion-name.column-title > div > span',
+      url: '#promotion-affiliate-form > table > tbody > tr > td.column-button.inline-center > div > p:nth-child(4) > a',
+      reward: '.condition-list li:nth-child(1)',
+    };
   }
 
   /**
