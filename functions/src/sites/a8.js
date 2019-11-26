@@ -13,8 +13,8 @@ module.exports = class A8 {
     this.countSelector = '.sumPage';
     this.dataSelector = {
       program: '#new_mainArea2clm > form > table.programSearch > tbody > tr > td.iconArea1 > table > tbody > tr:nth-child(2) > td',
-      url: '#new_mainArea2clm > form > table.programSearch > tbody > tr > td.iconArea2 > div.btnsize06 > a',
-      reward: '.pre_br',
+      url: '#new_mainArea2clm > form > table.programSearch > tbody > tr > td.iconArea2 > div:nth-child(1) > a',
+      reward: '.pre_br > b',
     };
   }
 

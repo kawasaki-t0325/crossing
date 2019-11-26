@@ -18,21 +18,25 @@ module.exports = async (site, username, password, word) => {
     await page.type(siteInfo.usernameBox, username);
     await page.type(siteInfo.passwordBox, password);
     await Promise.all([
-      page.waitForNavigation({ waitUntil: "networkidle2" }),
+      page.waitForNavigation({ timeout: 3000, waitUntil: "networkidle2" }),
       page.click(siteInfo.loginButton),
-    ]);
-
-    await page.waitForSelector(siteInfo.searchButton).catch(() => {
+    ]).catch(() => {
       throw { code: config.RESPONSE_CODE.UNAUTHORIZED, error: '認証に失敗しました' }
     });
 
-    await page.type(siteInfo.searchBox, word);
+    await page.waitForSelector(siteInfo.searchButton, { timeout: 3000 }).catch(() => {
+      throw { code: config.RESPONSE_CODE.UNAUTHORIZED, error: '認証に失敗しました' }
+    });
+
+    await page.type(siteInfo.searchBox, word).catch(() => {
+      throw { code: config.RESPONSE_CODE.UNAUTHORIZED, error: '認証に失敗しました' }
+    });
     Promise.all([
       page.waitForNavigation({ waitUntil: "networkidle2" }),
       page.click(siteInfo.searchButton),
     ]);
 
-    await page.waitForSelector(siteInfo.countSelector, { timeout: 3000 }).catch(() => {
+    await page.waitForSelector(siteInfo.countSelector, { timeout: 10000 }).catch(() => {
       throw { code: config.RESPONSE_CODE.NOT_FOUND, error: '商品が見つかりませんでした' }
     });
 
