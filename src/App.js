@@ -8,7 +8,8 @@ import {
   Card,
   CardHeader,
   CardContent,
-  Button
+  Button,
+  Link
 } from "@material-ui/core";
 import httpRequest from './modules/httpRequest';
 import { SITE_IDS } from './config';
@@ -49,6 +50,11 @@ function App() {
     usernameMoshimo: '',
     passwordMoshimo: '',
   });
+  const [result, setResult] = useState({
+    a8Result: {},
+    afbResult: {},
+    moshimoResult: {},
+  });
   const [word, setWord] = useState('');
 
   const asps = [
@@ -58,6 +64,7 @@ function App() {
       passwordKey: 'passwordA8',
       username: value.usernameA8,
       passwordA8: value.passwordA8,
+      result: result.a8Result,
     },
     {
       title: 'afb',
@@ -65,6 +72,7 @@ function App() {
       passwordKey: 'passwordAfb',
       username: value.usernameAfb,
       password: value.passwordAfb,
+      result: result.afbResult,
     },
     {
       title: 'もしもアフィリエイト',
@@ -72,14 +80,21 @@ function App() {
       passwordKey: 'passwordMoshimo',
       username: value.usernameMoshimo,
       password: value.passwordMoshimo,
+      result: result.moshimoResult,
     },
   ];
 
   const search = async () => {
     const { usernameA8, usernameMoshimo, usernameAfb, passwordA8, passwordMoshimo, passwordAfb } = value;
     const a8Result = await httpRequest.httpRequest(SITE_IDS.A8, word, usernameA8, passwordA8);
-    const afbResult = await httpRequest.httpRequest(SITE_IDS.A8, word, usernameAfb, passwordAfb);
-    const moshimoResult =  await httpRequest.httpRequest(SITE_IDS.A8, word, usernameMoshimo, passwordMoshimo);
+    const afbResult = await httpRequest.httpRequest(SITE_IDS.AFB, word, usernameAfb, passwordAfb);
+    const moshimoResult = await httpRequest.httpRequest(SITE_IDS.MOSHIMO, word, usernameMoshimo, passwordMoshimo);
+
+    setResult({
+      a8Result: a8Result,
+      afbResult: afbResult,
+      moshimoResult: moshimoResult,
+    });
   };
 
   const changeText = event => {
@@ -123,6 +138,15 @@ function App() {
                     value={value.password}
                     onChange={changeText}
                   />
+                </CardContent>
+                <CardContent>
+                  <Typography align="center">{asp.result.message}</Typography>
+                  {asp.result.product && asp.result.product.map((product, index) => (
+                    <React.Fragment key={index}>
+                      <Link href={product.url}>{product.name}</Link>
+                      <Typography>{product.price}円</Typography>
+                    </React.Fragment>
+                  ))}
                 </CardContent>
               </Card>
             </Grid>

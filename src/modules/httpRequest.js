@@ -10,7 +10,7 @@ class HttpRequest {
         password: password,
       });
 
-      console.log(result);
+      return result.data;
     } catch (e) {
     }
   }
