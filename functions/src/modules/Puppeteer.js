@@ -32,12 +32,35 @@ module.exports = async (site, username, password, word) => {
       page.click(siteInfo.searchButton),
     ]);
 
-    await page.waitForSelector(siteInfo.selector, { timeout: 3000 }).catch(() => {
+    await page.waitForSelector(siteInfo.countSelector, { timeout: 3000 }).catch(() => {
       throw { code: config.RESPONSE_CODE.NOT_FOUND, error: '商品が見つかりませんでした' }
     });
 
-    const result = await page.$eval(siteInfo.selector, element => element.textContent);
-    return siteInfo.formatForResponse(result);
+    const countText = await page.$eval(siteInfo.countSelector, element => element.textContent);
+    const count = siteInfo.formatForResponse(countText);
+    if (count === 0) {
+      throw { code: config.RESPONSE_CODE.NOT_FOUND, error: '商品が見つかりませんでした' }
+    }
+
+    return await page.evaluate((count, selector) => {
+      const programs = Array.from(document.querySelectorAll(selector.program));
+      const rewards = Array.from(document.querySelectorAll(selector.reward));
+      const urls = Array.from(document.querySelectorAll(selector.url));
+      const result = {
+        count: count,
+        message: '商品が見つかりました',
+      };
+      result.product = programs.map((program, index) => {
+        return {
+          name: program.textContent.trim(),
+          url: urls[index].href,
+          price: rewards[index].textContent.trim(),
+        };
+      });
+      return result;
+    }, count, siteInfo.dataSelector).catch(() => {
+      throw { code: config.RESPONSE_CODE.SERVER_ERROR, error: 'サイト構成が変更された可能性があります。管理者にお問い合わせください。' }
+    });
   } catch (error) {
     throw ('code' in error) ? error : { code: config.RESPONSE_CODE.SERVER_ERROR, error: 'サーバーエラーが発生しました' };
   }

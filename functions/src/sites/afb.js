@@ -10,7 +10,7 @@ module.exports = class Afb {
     this.loginButton = '#pageTitle > aside.m-grid__itemOrder--01.m-gheader__loginForm > g-header-loginform > div.m-form__wrap > form > div > div.m-gLoginGlid__btn > m-btn > div > input';
     this.searchButton = 'input[type="submit"]';
     // 取得項目
-    this.selector = '#pagination > div.pagination.clearFix > span > span';
+    this.countSelector = '#pagination > div.pagination.clearFix > span > span';
   }
 
   /**

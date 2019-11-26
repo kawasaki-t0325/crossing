@@ -10,7 +10,12 @@ module.exports = class A8 {
     this.loginButton = 'input[name="lgin_as_btn"]';
     this.searchButton = 'input[type="submit"]';
     // 取得項目
-    this.selector = '.sumPage';
+    this.countSelector = '.sumPage';
+    this.dataSelector = {
+      program: '#new_mainArea2clm > form > table.programSearch > tbody > tr > td.iconArea1 > table > tbody > tr:nth-child(2) > td',
+      url: '#new_mainArea2clm > form > table.programSearch > tbody > tr > td.iconArea2 > div.btnsize06 > a',
+      reward: '.pre_br',
+    };
   }
 
   /**

@@ -10,7 +10,7 @@ module.exports = class Moshimo {
     this.loginButton = 'input[name="login"]';
     this.searchButton = '.search-button > a';
     // 取得項目
-    this.selector = 'span.found-rows';
+    this.countSelector = 'span.found-rows';
   }
 
   /**
