@@ -10,7 +10,12 @@ module.exports = class Afb {
     this.loginButton = '#pageTitle > aside.m-grid__itemOrder--01.m-gheader__loginForm > g-header-loginform > div.m-form__wrap > form > div > div.m-gLoginGlid__btn > m-btn > div > input';
     this.searchButton = 'input[type="submit"]';
     // 取得項目
-    this.selector = '#pagination > div.pagination.clearFix > span > span';
+    this.countSelector = '#pagination > div.pagination.clearFix > span > span';
+    this.dataSelector = {
+      program: '#pagination > form > div > div.promotion_head.clearFix > div > h5:last-of-type',
+      url: '#pagination > form > div > div.promotion_head.clearFix > ul a[href^="/pa/promolist/?s"]',
+      reward: '#pagination > form > div > div.promotion_contents > table:nth-child(1) > tbody > tr:nth-child(2) > td',
+    };
   }
 
   /**

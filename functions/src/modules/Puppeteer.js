@@ -18,26 +18,53 @@ module.exports = async (site, username, password, word) => {
     await page.type(siteInfo.usernameBox, username);
     await page.type(siteInfo.passwordBox, password);
     await Promise.all([
-      page.waitForNavigation({ waitUntil: "networkidle2" }),
+      page.waitForNavigation({ timeout: 3000, waitUntil: "networkidle2" }),
       page.click(siteInfo.loginButton),
-    ]);
-
-    await page.waitForSelector(siteInfo.searchButton).catch(() => {
+    ]).catch(() => {
       throw { code: config.RESPONSE_CODE.UNAUTHORIZED, error: '認証に失敗しました' }
     });
 
-    await page.type(siteInfo.searchBox, word);
+    await page.waitForSelector(siteInfo.searchButton, { timeout: 3000 }).catch(() => {
+      throw { code: config.RESPONSE_CODE.UNAUTHORIZED, error: '認証に失敗しました' }
+    });
+
+    await page.type(siteInfo.searchBox, word).catch(() => {
+      throw { code: config.RESPONSE_CODE.UNAUTHORIZED, error: '認証に失敗しました' }
+    });
     Promise.all([
       page.waitForNavigation({ waitUntil: "networkidle2" }),
       page.click(siteInfo.searchButton),
     ]);
 
-    await page.waitForSelector(siteInfo.selector, { timeout: 3000 }).catch(() => {
+    await page.waitForSelector(siteInfo.countSelector, { timeout: 10000 }).catch(() => {
       throw { code: config.RESPONSE_CODE.NOT_FOUND, error: '商品が見つかりませんでした' }
     });
 
-    const result = await page.$eval(siteInfo.selector, element => element.textContent);
-    return siteInfo.formatForResponse(result);
+    const countText = await page.$eval(siteInfo.countSelector, element => element.textContent);
+    const count = siteInfo.formatForResponse(countText);
+    if (count === 0) {
+      throw { code: config.RESPONSE_CODE.NOT_FOUND, error: '商品が見つかりませんでした' }
+    }
+
+    return await page.evaluate((count, selector) => {
+      const programs = Array.from(document.querySelectorAll(selector.program)).filter((content, index) => index < 5);
+      const rewards = Array.from(document.querySelectorAll(selector.reward)).filter(content => !RegExp('-').test(content.textContent));
+      const urls = Array.from(document.querySelectorAll(selector.url));
+      const result = {
+        count: count,
+        message: '商品が見つかりました',
+      };
+      result.product = programs.map((program, index) => {
+        return {
+          name: program.textContent.trim(),
+          url: urls[index].href,
+          price: rewards[index].textContent.trim(),
+        };
+      });
+      return result;
+    }, count, siteInfo.dataSelector).catch(() => {
+      throw { code: config.RESPONSE_CODE.SERVER_ERROR, error: 'サイト構成が変更された可能性があります。管理者にお問い合わせください。' }
+    });
   } catch (error) {
     throw ('code' in error) ? error : { code: config.RESPONSE_CODE.SERVER_ERROR, error: 'サーバーエラーが発生しました' };
   }
