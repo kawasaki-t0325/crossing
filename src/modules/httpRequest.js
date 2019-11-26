@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { RESPONSE_STATUS, MESSSGE } from '../config';
 
 class HttpRequest {
   static httpRequest = async (siteId, word, username, password) => {
@@ -12,6 +13,8 @@ class HttpRequest {
 
       return result.data;
     } catch (e) {
+      // TODO: logの仕組みを構築する（cloudfunctionsで作成？）
+      return { code: RESPONSE_STATUS.SERVER_ERROR, message: MESSSGE.SERVER_ERROR };
     }
   }
 }

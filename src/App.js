@@ -13,7 +13,7 @@ import {
   CircularProgress
 } from "@material-ui/core";
 import httpRequest from './modules/httpRequest';
-import { SITE_IDS } from './config';
+import { SITE_IDS, RESPONSE_STATUS } from './config';
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -46,6 +46,9 @@ const useStyles = makeStyles(theme => ({
     position: 'absolute',
     left: '50%',
     marginLeft: -12,
+  },
+  textWarning: {
+    color: '#d50000'
   }
 }));
 
@@ -158,10 +161,15 @@ function App() {
                 </CardContent>
                 <CardContent className={classes.relative}>
                   {loadging
-                    ? <CircularProgress size={24} className={classes.progress} />
+                    ? <CircularProgress size={24} className={classes.progress}/>
                     : (
                       <React.Fragment>
-                        <Typography align="center">{asp.result.message}</Typography>
+                        <Typography
+                          align="center"
+                          className={(asp.result.code !== RESPONSE_STATUS.SUCCESS) ? classes.textWarning : ''}
+                        >
+                          {asp.result.message}
+                        </Typography>
                         {asp.result.product && asp.result.product.map((product, index) => (
                           <React.Fragment key={index}>
                             <Link href={product.url}>{product.name}</Link>

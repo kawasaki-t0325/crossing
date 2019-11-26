@@ -6,4 +6,9 @@ export const SITE_IDS = {
 
 export const RESPONSE_STATUS = {
   SUCCESS: 200,
+  SERVER_ERROR: 500,
+};
+
+export const MESSSGE = {
+  SERVER_ERROR: "サーバーエラーが発生しました。再度お試しするか運営者にお問い合わせください。",
 };
