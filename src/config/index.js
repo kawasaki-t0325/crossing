@@ -3,3 +3,7 @@ export const SITE_IDS = {
   MOSHIMO: 2,
   AFB: 3,
 };
+
+export const RESPONSE_STATUS = {
+  SUCCESS: 200,
+};

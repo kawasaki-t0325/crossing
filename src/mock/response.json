@@ -15,5 +15,21 @@
         "price": 2000
       }
     ]
+  },
+  "badRequest": {
+    "code": 400,
+    "message": "リクエストに不正があります"
+  },
+  "unauthorized": {
+    "code": 401,
+    "message": "認証に失敗しました"
+  },
+  "notFound": {
+    "code": 404,
+    "message": "商品が見つかりませんでした"
+  },
+  "serverError": {
+    "code": 500,
+    "message": "サーバーエラーが発生しました。再度お試しするか運営者にお問い合わせください。"
   }
 }
