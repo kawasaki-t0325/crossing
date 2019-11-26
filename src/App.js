@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   makeStyles,
   Container,
@@ -9,7 +9,8 @@ import {
   CardHeader,
   CardContent,
   Button,
-  Link
+  Link,
+  CircularProgress
 } from "@material-ui/core";
 import httpRequest from './modules/httpRequest';
 import { SITE_IDS } from './config';
@@ -37,11 +38,20 @@ const useStyles = makeStyles(theme => ({
     margin: 25,
     width: '20%',
     height: '50%',
+  },
+  relative: {
+    position: 'relative',
+  },
+  progress: {
+    position: 'absolute',
+    left: '50%',
+    marginLeft: -12,
   }
 }));
 
 function App() {
   const classes = useStyles();
+  const [loadging, setLoading] = useState(true);
   const [value, setValue] = useState({
     usernameA8: '',
     passwordA8: '',
@@ -84,7 +94,14 @@ function App() {
     },
   ];
 
+  useEffect(() => {
+    setLoading(false);
+  }, [result]);
+
   const search = async () => {
+    // レスポンスが返ってくるまでloading状態にする
+    setLoading(true);
+
     const { usernameA8, usernameMoshimo, usernameAfb, passwordA8, passwordMoshimo, passwordAfb } = value;
     const a8Result = await httpRequest.httpRequest(SITE_IDS.A8, word, usernameA8, passwordA8);
     const afbResult = await httpRequest.httpRequest(SITE_IDS.AFB, word, usernameAfb, passwordAfb);
@@ -139,14 +156,22 @@ function App() {
                     onChange={changeText}
                   />
                 </CardContent>
-                <CardContent>
-                  <Typography align="center">{asp.result.message}</Typography>
-                  {asp.result.product && asp.result.product.map((product, index) => (
-                    <React.Fragment key={index}>
-                      <Link href={product.url}>{product.name}</Link>
-                      <Typography>{product.price}円</Typography>
-                    </React.Fragment>
-                  ))}
+                <CardContent className={classes.relative}>
+                  {loadging
+                    ? <CircularProgress size={24} className={classes.progress} />
+                    : (
+                      <React.Fragment>
+                        <Typography align="center">{asp.result.message}</Typography>
+                        {asp.result.product && asp.result.product.map((product, index) => (
+                          <React.Fragment key={index}>
+                            <Link href={product.url}>{product.name}</Link>
+                            <Typography>{product.price}円</Typography>
+                          </React.Fragment>
+                        ))}
+                      </React.Fragment>
+                    )
+                  }
+
                 </CardContent>
               </Card>
             </Grid>
