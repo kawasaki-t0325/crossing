@@ -111,14 +111,16 @@ function App() {
     setLoading(true);
 
     const { usernameA8, usernameMoshimo, usernameAfb, passwordA8, passwordMoshimo, passwordAfb } = value;
-    const a8Result = await httpRequest.httpRequest(SITE_IDS.A8, word, usernameA8, passwordA8);
-    const afbResult = await httpRequest.httpRequest(SITE_IDS.AFB, word, usernameAfb, passwordAfb);
-    const moshimoResult = await httpRequest.httpRequest(SITE_IDS.MOSHIMO, word, usernameMoshimo, passwordMoshimo);
-
-    setResult({
-      a8Result: a8Result,
-      afbResult: afbResult,
-      moshimoResult: moshimoResult,
+    Promise.all([
+      httpRequest.httpRequest(SITE_IDS.A8, word, usernameA8, passwordA8),
+      httpRequest.httpRequest(SITE_IDS.AFB, word, usernameAfb, passwordAfb),
+      httpRequest.httpRequest(SITE_IDS.MOSHIMO, word, usernameMoshimo, passwordMoshimo),
+    ]).then(result => {
+      setResult({
+        a8Result: result[0],
+        afbResult: result[1],
+        moshimoResult: result[2],
+      });
     });
   };
 
