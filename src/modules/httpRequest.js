@@ -3,6 +3,7 @@ import { RESPONSE_STATUS, MESSSGE } from '../config';
 
 class HttpRequest {
   static httpRequest = async (siteId, word, username, password) => {
+    if (!siteId || !word || !username || !password) return {};
     try {
       const result = await axios.post(`${process.env.REACT_APP_HOST}/crossing-39d56/asia-northeast1/searchItem`, {
         site: siteId,

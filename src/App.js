@@ -10,7 +10,12 @@ import {
   CardContent,
   Button,
   Link,
-  CircularProgress
+  CircularProgress,
+  Table,
+  TableHead,
+  TableBody,
+  TableCell,
+  TableRow
 } from "@material-ui/core";
 import httpRequest from './modules/httpRequest';
 import { SITE_IDS, RESPONSE_STATUS } from './config';
@@ -168,14 +173,24 @@ function App() {
                           align="center"
                           className={(asp.result.code !== RESPONSE_STATUS.SUCCESS) ? classes.textWarning : ''}
                         >
-                          {asp.result.message}
+                          {asp.result.message} {asp.result.count && <p>{asp.result.product.length}/{asp.result.count}件表示</p>}
                         </Typography>
-                        {asp.result.product && asp.result.product.map((product, index) => (
-                          <React.Fragment key={index}>
-                            <Link href={product.url}>{product.name}</Link>
-                            <Typography>{product.price}円</Typography>
-                          </React.Fragment>
-                        ))}
+                        <Table>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>プロジェクト名</TableCell>
+                              <TableCell>報酬</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {asp.result.product && asp.result.product.map((product, index) => (
+                              <TableRow key={index}>
+                                <TableCell><Link href={product.url}>{product.name}</Link></TableCell>
+                                <TableCell><Typography>{product.price}</Typography></TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
                       </React.Fragment>
                     )
                   }
