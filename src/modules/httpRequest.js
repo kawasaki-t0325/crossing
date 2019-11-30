@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { RESPONSE_STATUS, MESSSGE } from '../config';
+import { RESPONSE_STATUS, MESSSGE, CODE } from '../config';
 
 class HttpRequest {
   static httpRequest = async (siteId, word, username, password) => {
@@ -16,6 +16,9 @@ class HttpRequest {
       return result.data;
     } catch (e) {
       // TODO: logの仕組みを構築する（cloudfunctionsで作成？）
+      if (e.code === CODE.TIMEOUT) {
+        return { code: RESPONSE_STATUS.SERVER_ERROR, message: MESSSGE.TIMEOUT };
+      }
       return { code: RESPONSE_STATUS.SERVER_ERROR, message: MESSSGE.SERVER_ERROR };
     }
   }
