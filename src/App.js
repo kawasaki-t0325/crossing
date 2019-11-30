@@ -28,22 +28,18 @@ const useStyles = makeStyles(theme => ({
     }
   },
   container: {
-    marginTop: theme.spacing(8),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
   },
+  title: {
+    marginTop: theme.spacing(8),
+  },
   main: {
     marginTop: theme.spacing(4),
   },
-  box: {
-    display: 'flex',
-    width: '50%',
-  },
   button: {
-    margin: 25,
-    width: '20%',
-    height: '50%',
+    padding: theme.spacing(2, 4),
   },
   relative: {
     position: 'relative',
@@ -141,7 +137,7 @@ function App() {
 
   return (
     <React.Fragment>
-      <Container className={classes.container}>
+      <Container className={`${classes.container} ${classes.title}`}>
         <Typography align="center" variant="h3">Crossing</Typography>
       </Container>
       <Container className={classes.main} component="main">
@@ -183,7 +179,8 @@ function App() {
                           align="center"
                           className={(asp.result.code !== RESPONSE_STATUS.SUCCESS) ? classes.textWarning : ''}
                         >
-                          {asp.result.message} {asp.result.count && <span>{asp.result.product.length}/{asp.result.count}件表示</span>}
+                          {asp.result.message} {asp.result.count &&
+                        <span>{asp.result.product.length}/{asp.result.count}件表示</span>}
                         </Typography>
                         <Table>
                           <TableHead>
@@ -204,12 +201,11 @@ function App() {
                       </React.Fragment>
                     )
                   }
-
                 </CardContent>
               </Card>
             </Grid>
           ))}
-          <div className={classes.box}>
+          <Container className={classes.container} maxWidth="md">
             <TextField
               variant="outlined"
               margin="normal"
@@ -223,7 +219,7 @@ function App() {
             <Button className={classes.button} variant="contained" color="primary" onClick={search}>
               検索する
             </Button>
-          </div>
+          </Container>
           <Grid item xs={12}>
             {message && <Typography align="center" className={classes.textWarning}>{message}</Typography>}
           </Grid>
