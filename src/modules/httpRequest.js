@@ -6,7 +6,7 @@ class HttpRequest {
     if (!siteId || !word || !username || !password) return {};
     try {
       const instance = axios.create({ timeout: 15000 });
-      const result = await instance.post(`${process.env.REACT_APP_HOST}/crossing-39d56/asia-northeast1/searchItem`, {
+      const result = await instance.post(`${process.env.REACT_APP_HOST}/searchItem`, {
         site: siteId,
         word: word,
         username: username,
