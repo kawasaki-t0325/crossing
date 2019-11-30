@@ -18,7 +18,7 @@ module.exports = async (site, username, password, word) => {
     await page.type(siteInfo.usernameBox, username);
     await page.type(siteInfo.passwordBox, password);
     await Promise.all([
-      page.waitForNavigation({ timeout: 3000, waitUntil: "networkidle2" }),
+      page.waitForNavigation({ timeout: 10000, waitUntil: "networkidle2" }),
       page.click(siteInfo.loginButton),
     ]).catch(() => {
       throw { code: config.RESPONSE_CODE.UNAUTHORIZED, error: '認証に失敗しました' }
