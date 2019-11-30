@@ -183,7 +183,7 @@ function App() {
                           align="center"
                           className={(asp.result.code !== RESPONSE_STATUS.SUCCESS) ? classes.textWarning : ''}
                         >
-                          {asp.result.message} {asp.result.count && <p>{asp.result.product.length}/{asp.result.count}件表示</p>}
+                          {asp.result.message} {asp.result.count && <span>{asp.result.product.length}/{asp.result.count}件表示</span>}
                         </Typography>
                         <Table>
                           <TableHead>
