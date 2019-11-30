@@ -9,16 +9,20 @@ module.exports = async (site, username, password, word) => {
   const siteInfo = fetchSiteInfo(site);
   try {
     const browser = await puppeteer.launch({
-      headless: false,
+      // headless: false, NOTE: 開発時にはコメントアウトを外す
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
     const page = await browser.newPage();
+    await page.setRequestInterception(true);
+    page.on('request', request => {
+      ['images', 'stylesheet', 'font'].includes(request.resourceType()) ? request.abort() : request.continue();
+    });
 
     await page.goto(siteInfo.loginUrl);
     await page.type(siteInfo.usernameBox, username);
     await page.type(siteInfo.passwordBox, password);
     await Promise.all([
-      page.waitForNavigation({ timeout: 3000, waitUntil: "networkidle2" }),
+      page.waitForNavigation({ timeout: 10000, waitUntil: "networkidle2" }),
       page.click(siteInfo.loginButton),
     ]).catch(() => {
       throw { code: config.RESPONSE_CODE.UNAUTHORIZED, error: '認証に失敗しました' }

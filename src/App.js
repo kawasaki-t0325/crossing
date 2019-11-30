@@ -10,10 +10,16 @@ import {
   CardContent,
   Button,
   Link,
-  CircularProgress
+  CircularProgress,
+  Table,
+  TableHead,
+  TableBody,
+  TableCell,
+  TableRow
 } from "@material-ui/core";
 import httpRequest from './modules/httpRequest';
-import { SITE_IDS, RESPONSE_STATUS } from './config';
+import localStorage from './modules/localStorage';
+import { SITE_IDS, RESPONSE_STATUS, MESSSGE } from './config';
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -22,22 +28,18 @@ const useStyles = makeStyles(theme => ({
     }
   },
   container: {
-    marginTop: theme.spacing(8),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
   },
+  title: {
+    marginTop: theme.spacing(8),
+  },
   main: {
     marginTop: theme.spacing(4),
   },
-  box: {
-    display: 'flex',
-    width: '50%',
-  },
   button: {
-    margin: 25,
-    width: '20%',
-    height: '50%',
+    padding: theme.spacing(2, 4),
   },
   relative: {
     position: 'relative',
@@ -69,6 +71,7 @@ function App() {
     moshimoResult: {},
   });
   const [word, setWord] = useState('');
+  const [message, setMessage] = useState('');
 
   const asps = [
     {
@@ -102,18 +105,26 @@ function App() {
   }, [result]);
 
   const search = async () => {
+    // 1日の上限検索回数を超えていないかチェックする
+    if (!localStorage.countUp()) {
+      setMessage(MESSSGE.OVER_LIMIT);
+      return;
+    }
+
     // レスポンスが返ってくるまでloading状態にする
     setLoading(true);
 
     const { usernameA8, usernameMoshimo, usernameAfb, passwordA8, passwordMoshimo, passwordAfb } = value;
-    const a8Result = await httpRequest.httpRequest(SITE_IDS.A8, word, usernameA8, passwordA8);
-    const afbResult = await httpRequest.httpRequest(SITE_IDS.AFB, word, usernameAfb, passwordAfb);
-    const moshimoResult = await httpRequest.httpRequest(SITE_IDS.MOSHIMO, word, usernameMoshimo, passwordMoshimo);
-
-    setResult({
-      a8Result: a8Result,
-      afbResult: afbResult,
-      moshimoResult: moshimoResult,
+    Promise.all([
+      httpRequest.httpRequest(SITE_IDS.A8, word, usernameA8, passwordA8),
+      httpRequest.httpRequest(SITE_IDS.AFB, word, usernameAfb, passwordAfb),
+      httpRequest.httpRequest(SITE_IDS.MOSHIMO, word, usernameMoshimo, passwordMoshimo),
+    ]).then(result => {
+      setResult({
+        a8Result: result[0],
+        afbResult: result[1],
+        moshimoResult: result[2],
+      });
     });
   };
 
@@ -126,7 +137,7 @@ function App() {
 
   return (
     <React.Fragment>
-      <Container className={classes.container}>
+      <Container className={`${classes.container} ${classes.title}`}>
         <Typography align="center" variant="h3">Crossing</Typography>
       </Container>
       <Container className={classes.main} component="main">
@@ -168,23 +179,33 @@ function App() {
                           align="center"
                           className={(asp.result.code !== RESPONSE_STATUS.SUCCESS) ? classes.textWarning : ''}
                         >
-                          {asp.result.message}
+                          {asp.result.message} {asp.result.count &&
+                        <span>{asp.result.product.length}/{asp.result.count}件表示</span>}
                         </Typography>
-                        {asp.result.product && asp.result.product.map((product, index) => (
-                          <React.Fragment key={index}>
-                            <Link href={product.url}>{product.name}</Link>
-                            <Typography>{product.price}円</Typography>
-                          </React.Fragment>
-                        ))}
+                        <Table>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>プロジェクト名</TableCell>
+                              <TableCell>報酬</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {asp.result.product && asp.result.product.map((product, index) => (
+                              <TableRow key={index}>
+                                <TableCell><Link href={product.url}>{product.name}</Link></TableCell>
+                                <TableCell><Typography>{product.price}</Typography></TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
                       </React.Fragment>
                     )
                   }
-
                 </CardContent>
               </Card>
             </Grid>
           ))}
-          <div className={classes.box}>
+          <Container className={classes.container} maxWidth="md">
             <TextField
               variant="outlined"
               margin="normal"
@@ -198,7 +219,10 @@ function App() {
             <Button className={classes.button} variant="contained" color="primary" onClick={search}>
               検索する
             </Button>
-          </div>
+          </Container>
+          <Grid item xs={12}>
+            {message && <Typography align="center" className={classes.textWarning}>{message}</Typography>}
+          </Grid>
         </Grid>
       </Container>
     </React.Fragment>
