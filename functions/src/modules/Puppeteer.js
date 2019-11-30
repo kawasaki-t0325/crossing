@@ -9,7 +9,7 @@ module.exports = async (site, username, password, word) => {
   const siteInfo = fetchSiteInfo(site);
   try {
     const browser = await puppeteer.launch({
-      headless: false,
+      // headless: false, NOTE: 開発時にはコメントアウトを外す
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
     const page = await browser.newPage();
