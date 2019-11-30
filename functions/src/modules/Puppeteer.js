@@ -13,6 +13,10 @@ module.exports = async (site, username, password, word) => {
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
     const page = await browser.newPage();
+    await page.setRequestInterception(true);
+    page.on('request', request => {
+      ['images', 'stylesheet', 'font'].includes(request.resourceType()) ? request.abort() : request.continue();
+    });
 
     await page.goto(siteInfo.loginUrl);
     await page.type(siteInfo.usernameBox, username);
