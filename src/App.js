@@ -18,7 +18,8 @@ import {
   TableRow
 } from "@material-ui/core";
 import httpRequest from './modules/httpRequest';
-import { SITE_IDS, RESPONSE_STATUS } from './config';
+import localStorage from './modules/localStorage';
+import { SITE_IDS, RESPONSE_STATUS, MESSSGE } from './config';
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -74,6 +75,7 @@ function App() {
     moshimoResult: {},
   });
   const [word, setWord] = useState('');
+  const [message, setMessage] = useState('');
 
   const asps = [
     {
@@ -107,6 +109,12 @@ function App() {
   }, [result]);
 
   const search = async () => {
+    // 1日の上限検索回数を超えていないかチェックする
+    if (!localStorage.countUp()) {
+      setMessage(MESSSGE.OVER_LIMIT);
+      return;
+    }
+
     // レスポンスが返ってくるまでloading状態にする
     setLoading(true);
 
@@ -216,6 +224,9 @@ function App() {
               検索する
             </Button>
           </div>
+          <Grid item xs={12}>
+            {message && <Typography align="center" className={classes.textWarning}>{message}</Typography>}
+          </Grid>
         </Grid>
       </Container>
     </React.Fragment>
