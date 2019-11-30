@@ -216,7 +216,7 @@ function App() {
               value={word}
               onChange={event => setWord(event.target.value)}
             />
-            <Button className={classes.button} variant="contained" color="primary" onClick={search}>
+            <Button className={classes.button} disabled={loadging} variant="contained" color="primary" onClick={search}>
               検索する
             </Button>
           </Container>
