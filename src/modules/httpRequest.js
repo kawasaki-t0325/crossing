@@ -5,7 +5,7 @@ class HttpRequest {
   static httpRequest = async (siteId, word, username, password) => {
     if (!siteId || !word || !username || !password) return {};
     try {
-      const instance = axios.create({ timeout: 15000 });
+      const instance = axios.create({ timeout: 30000 });
       const result = await instance.post(`${process.env.REACT_APP_HOST}/searchItem`, {
         site: siteId,
         word: word,
