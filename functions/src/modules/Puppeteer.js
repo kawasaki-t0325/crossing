@@ -10,7 +10,15 @@ module.exports = async (site, username, password, word) => {
   try {
     const browser = await puppeteer.launch({
       // headless: false, NOTE: 開発時にはコメントアウトを外す
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '-–disable-dev-shm-usage',
+        '--disable-gpu',
+        '--no-first-run',
+        '--no-zygote',
+        '--single-process',
+      ]
     });
     const page = await browser.newPage();
     await page.setRequestInterception(true);
@@ -18,17 +26,17 @@ module.exports = async (site, username, password, word) => {
       ['images', 'stylesheet', 'font'].includes(request.resourceType()) ? request.abort() : request.continue();
     });
 
-    await page.goto(siteInfo.loginUrl);
+    await page.goto(siteInfo.loginUrl, { waitUntil: "networkidle2" });
     await page.type(siteInfo.usernameBox, username);
     await page.type(siteInfo.passwordBox, password);
     await Promise.all([
-      page.waitForNavigation({ timeout: 10000, waitUntil: "networkidle2" }),
+      page.waitForNavigation({ timeout: 20000, waitUntil: "networkidle2" }),
       page.click(siteInfo.loginButton),
     ]).catch(() => {
       throw { code: config.RESPONSE_CODE.UNAUTHORIZED, error: '認証に失敗しました' }
     });
 
-    await page.waitForSelector(siteInfo.searchButton, { timeout: 3000 }).catch(() => {
+    await page.waitForSelector(siteInfo.searchButton, { timeout: 6000 }).catch(() => {
       throw { code: config.RESPONSE_CODE.UNAUTHORIZED, error: '認証に失敗しました' }
     });
 
@@ -40,7 +48,7 @@ module.exports = async (site, username, password, word) => {
       page.click(siteInfo.searchButton),
     ]);
 
-    await page.waitForSelector(siteInfo.countSelector, { timeout: 10000 }).catch(() => {
+    await page.waitForSelector(siteInfo.countSelector, { timeout: 20000 }).catch(() => {
       throw { code: config.RESPONSE_CODE.NOT_FOUND, error: '商品が見つかりませんでした' }
     });
 
