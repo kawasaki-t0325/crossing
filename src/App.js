@@ -140,6 +140,16 @@ function App() {
         moshimoResult: result[2],
       });
     });
+
+    if (isAllError()) {
+      localStorage.countDown();
+    }
+  };
+
+  const isAllError = () => {
+    return (result.a8Result['code'] !== RESPONSE_STATUS.SUCCESS)
+      && (result.moshimoResult['code'] !== RESPONSE_STATUS.SUCCESS)
+      && (result.afbResult['code'] !== RESPONSE_STATUS.SUCCESS);
   };
 
   const changeText = event => {
