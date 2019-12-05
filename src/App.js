@@ -39,6 +39,7 @@ const useStyles = makeStyles(theme => ({
   '@global': {
     body: {
       backgroundColor: theme.palette.grey[50],
+      fontFamily: 'Noto sans JP'
     }
   },
   container: {
@@ -46,8 +47,11 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
-  title: {
+  title_wrapper: {
     marginTop: theme.spacing(8),
+  },
+  title: {
+    fontFamily: 'Georgia-BoldItalic',
   },
   main: {
     marginTop: theme.spacing(4),
@@ -161,8 +165,8 @@ function App() {
 
   return (
     <React.Fragment>
-      <Container className={`${classes.container} ${classes.title}`}>
-        <Typography align="center" variant="h3">Crossing</Typography>
+      <Container className={`${classes.container} ${classes.title_wrapper}`}>
+        <Typography className={classes.title} align="center" variant="h3">Crossing</Typography>
       </Container>
       <Container className={classes.main} component="main">
         <Grid container spacing={5} justify="center">
