@@ -249,6 +249,10 @@ function App() {
           </Grid>
         </Grid>
         <Box mt={5}>
+          <Typography align="center">
+            <Link href="https://twitter.com/memorandumrail">Twitter</Link>{' '}|{' '}
+            <Link href="https://memorandumrail.com/contact">お問い合わせ</Link>
+          </Typography>
           <Copyright />
         </Box>
       </Container>
