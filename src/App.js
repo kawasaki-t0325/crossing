@@ -10,7 +10,6 @@ import {
   CardContent,
   Button,
   Link,
-  CircularProgress,
   Table,
   TableHead,
   TableBody,
@@ -18,6 +17,7 @@ import {
   TableRow,
   Box
 } from "@material-ui/core";
+import Loading from './components/Loading';
 import httpRequest from './modules/httpRequest';
 import localStorage from './modules/localStorage';
 import { SITE_IDS, RESPONSE_STATUS, MESSSGE } from './config';
@@ -165,6 +165,7 @@ function App() {
 
   return (
     <React.Fragment>
+      {loadging && <Loading />}
       <Container className={`${classes.container} ${classes.title_wrapper}`}>
         <Typography className={classes.title} align="center" variant="h3">Crossing</Typography>
       </Container>
@@ -199,36 +200,29 @@ function App() {
                   />
                 </CardContent>
                 <CardContent className={classes.relative}>
-                  {loadging
-                    ? <CircularProgress size={24} className={classes.progress}/>
-                    : (
-                      <React.Fragment>
-                        <Typography
-                          align="center"
-                          className={(asp.result.code !== RESPONSE_STATUS.SUCCESS) ? classes.textWarning : ''}
-                        >
-                          {asp.result.message} {asp.result.count &&
-                        <span>{asp.result.product.length}/{asp.result.count}件表示</span>}
-                        </Typography>
-                        <Table>
-                          <TableHead>
-                            <TableRow>
-                              <TableCell>プロジェクト名</TableCell>
-                              <TableCell>報酬</TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {asp.result.product && asp.result.product.map((product, index) => (
-                              <TableRow key={index}>
-                                <TableCell><Link href={product.url}>{product.name}</Link></TableCell>
-                                <TableCell><Typography>{product.price}</Typography></TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </React.Fragment>
-                    )
-                  }
+                  <Typography
+                    align="center"
+                    className={(asp.result.code !== RESPONSE_STATUS.SUCCESS) ? classes.textWarning : ''}
+                  >
+                    {asp.result.message} {asp.result.count &&
+                  <span>{asp.result.product.length}/{asp.result.count}件表示</span>}
+                  </Typography>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>プロジェクト名</TableCell>
+                        <TableCell>報酬</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {asp.result.product && asp.result.product.map((product, index) => (
+                        <TableRow key={index}>
+                          <TableCell><Link href={product.url}>{product.name}</Link></TableCell>
+                          <TableCell><Typography>{product.price}</Typography></TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </CardContent>
               </Card>
             </Grid>
