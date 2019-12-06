@@ -12,6 +12,16 @@ class LocalStorage {
     return true;
   };
 
+  static countDown = () => {
+    const count = LocalStorage.getExpiredStorage('count');
+    if (count === '') {
+      return false;
+    }
+
+    LocalStorage.updateExpiredStorage('count', count - 1);
+    return true;
+  };
+
   /**
    * 有効期限情報を保有した値をlocalStorageに保存する
    *
