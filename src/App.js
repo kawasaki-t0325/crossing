@@ -132,17 +132,13 @@ function App() {
         afbResult: result[1],
         moshimoResult: result[2],
       });
-    });
 
-    if (isAllError()) {
-      localStorage.countDown();
-    }
+      isAllError(result) && localStorage.countDown();
+    });
   };
 
-  const isAllError = () => {
-    return (result.a8Result['code'] !== RESPONSE_STATUS.SUCCESS)
-      && (result.moshimoResult['code'] !== RESPONSE_STATUS.SUCCESS)
-      && (result.afbResult['code'] !== RESPONSE_STATUS.SUCCESS);
+  const isAllError = results => {
+    return results.filter(result => result['code'] === RESPONSE_STATUS.SUCCESS).length === 0;
   };
 
   const changeText = event => {
