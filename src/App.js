@@ -18,22 +18,11 @@ import {
   Box
 } from "@material-ui/core";
 import Loading from './components/Loading';
+import Copyright from './components/Copyright';
 import httpRequest from './modules/httpRequest';
 import localStorage from './modules/localStorage';
 import { SITE_IDS, RESPONSE_STATUS, MESSSGE } from './config';
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://memorandumrail.com/">
-        Memorandumrail
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 const useStyles = makeStyles(theme => ({
   '@global': {
