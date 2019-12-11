@@ -17,7 +17,6 @@ module.exports = async (site, username, password, word) => {
         '--disable-gpu',
         '--no-first-run',
         '--no-zygote',
-        '--single-process',
       ]
     });
     const page = await browser.newPage();
