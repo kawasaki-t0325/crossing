@@ -5,35 +5,16 @@ import {
   TextField,
   Typography,
   Grid,
-  Card,
-  CardHeader,
-  CardContent,
   Button,
   Link,
-  Table,
-  TableHead,
-  TableBody,
-  TableCell,
-  TableRow,
   Box
 } from "@material-ui/core";
 import Loading from './components/Loading';
+import Copyright from './components/Copyright';
+import AspInput from './components/AspInput';
 import httpRequest from './modules/httpRequest';
 import localStorage from './modules/localStorage';
 import { SITE_IDS, RESPONSE_STATUS, MESSSGE } from './config';
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://memorandumrail.com/">
-        Memorandumrail
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -59,17 +40,9 @@ const useStyles = makeStyles(theme => ({
   button: {
     padding: theme.spacing(2, 4),
   },
-  relative: {
-    position: 'relative',
-  },
-  progress: {
-    position: 'absolute',
-    left: '50%',
-    marginLeft: -12,
-  },
   textWarning: {
     color: '#d50000'
-  }
+  },
 }));
 
 function App() {
@@ -143,17 +116,13 @@ function App() {
         afbResult: result[1],
         moshimoResult: result[2],
       });
-    });
 
-    if (isAllError()) {
-      localStorage.countDown();
-    }
+      isAllError(result) && localStorage.countDown();
+    });
   };
 
-  const isAllError = () => {
-    return (result.a8Result['code'] !== RESPONSE_STATUS.SUCCESS)
-      && (result.moshimoResult['code'] !== RESPONSE_STATUS.SUCCESS)
-      && (result.afbResult['code'] !== RESPONSE_STATUS.SUCCESS);
+  const isAllError = results => {
+    return results.filter(result => result['code'] === RESPONSE_STATUS.SUCCESS).length === 0;
   };
 
   const changeText = event => {
@@ -172,59 +141,13 @@ function App() {
       <Container className={classes.main} component="main">
         <Grid container spacing={5} justify="center">
           {asps.map(asp => (
-            <Grid item key={asp.title} xs={12} sm={6} md={4}>
-              <Card>
-                <CardHeader
-                  title={asp.title}
-                  titleTypographyProps={{ align: 'center' }}
-                />
-                <CardContent>
-                  <TextField
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    placeholder="ユーザー名"
-                    name={asp.usernameKey}
-                    value={value.username}
-                    onChange={changeText}
-                  />
-                  <TextField
-                    type="password"
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    placeholder="パスワード"
-                    name={asp.passwordKey}
-                    value={value.password}
-                    onChange={changeText}
-                  />
-                </CardContent>
-                <CardContent className={classes.relative}>
-                  <Typography
-                    align="center"
-                    className={(asp.result.code !== RESPONSE_STATUS.SUCCESS) ? classes.textWarning : ''}
-                  >
-                    {asp.result.message} {asp.result.count &&
-                  <span>{asp.result.product.length}/{asp.result.count}件表示</span>}
-                  </Typography>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>プロジェクト名</TableCell>
-                        <TableCell>報酬</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {asp.result.product && asp.result.product.map((product, index) => (
-                        <TableRow key={index}>
-                          <TableCell><Link href={product.url}>{product.name}</Link></TableCell>
-                          <TableCell><Typography>{product.price}</Typography></TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
+            <Grid item xs={12} sm={6} md={4}>
+              <AspInput
+                key={asp.title}
+                asp={asp}
+                value={value}
+                changeText={changeText}
+              />
             </Grid>
           ))}
           <Container className={classes.container} maxWidth="md">
