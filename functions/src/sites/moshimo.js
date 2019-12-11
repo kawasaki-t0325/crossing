@@ -1,5 +1,9 @@
+const functions = require('firebase-functions');
+
 module.exports = class Moshimo {
   constructor() {
+    this.username = functions.config().moshimo.username;
+    this.password = functions.config().moshimo.password;
     // ログインページURL
     this.loginUrl ='https://af.moshimo.com/af/shop/login';
     // 入力項目

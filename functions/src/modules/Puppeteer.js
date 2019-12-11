@@ -5,8 +5,10 @@ const A8 = require('../sites/a8');
 const Moshimo = require('../sites/moshimo');
 const Afb = require('../sites/afb');
 
-module.exports = async (site, username, password, word) => {
+module.exports = async (site, word) => {
   const siteInfo = fetchSiteInfo(site);
+  const username = siteInfo.username;
+  const password = siteInfo.password;
   try {
     const browser = await puppeteer.launch({
       // headless: false, NOTE: 開発時にはコメントアウトを外す
