@@ -10,7 +10,6 @@ import {
   TableBody,
   TableCell,
   TableRow,
-  TextField,
   Typography,
 } from "@material-ui/core";
 import { RESPONSE_STATUS } from "../config";
@@ -26,7 +25,7 @@ const useStyles = makeStyles(() => ({
 
 function AspInput(props) {
   const classes = useStyles();
-  const { asp, value, changeText } = props;
+  const { asp } = props;
 
   return (
     <Card>
@@ -34,27 +33,6 @@ function AspInput(props) {
         title={asp.title}
         titleTypographyProps={{ align: 'center' }}
       />
-      <CardContent>
-        <TextField
-          variant="outlined"
-          margin="normal"
-          fullWidth
-          placeholder="ユーザー名"
-          name={asp.usernameKey}
-          value={value.username}
-          onChange={changeText}
-        />
-        <TextField
-          type="password"
-          variant="outlined"
-          margin="normal"
-          fullWidth
-          placeholder="パスワード"
-          name={asp.passwordKey}
-          value={value.password}
-          onChange={changeText}
-        />
-      </CardContent>
       <CardContent className={classes.relative}>
         <Typography
           align="center"
