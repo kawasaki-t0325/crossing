@@ -67,7 +67,7 @@ function Loading() {
               return <div key={index} className={classes.text} style={{ animationDelay: `${index / 10}s`, }}>{text}</div>;
             })}
           </div>
-          <p className={classes.warning}>※検索には15秒前後の時間がかかります</p>
+          <p className={classes.warning}>※検索には20~30秒前後の時間がかかります</p>
         </div>
       </div>
     </Container>
