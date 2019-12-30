@@ -1,5 +1,9 @@
+const functions = require('firebase-functions');
+
 module.exports = class Afb {
   constructor() {
+    this.username = functions.config().afb.username;
+    this.password = functions.config().afb.password;
     // ログインページURL
     this.loginUrl ='https://www.afi-b.com';
     // 入力項目

@@ -75,14 +75,6 @@ const useStyles = makeStyles(theme => ({
 function App() {
   const classes = useStyles();
   const [loadging, setLoading] = useState(true);
-  const [value, setValue] = useState({
-    usernameA8: '',
-    passwordA8: '',
-    usernameAfb: '',
-    passwordAfb: '',
-    usernameMoshimo: '',
-    passwordMoshimo: '',
-  });
   const [result, setResult] = useState({
     a8Result: {},
     afbResult: {},
@@ -94,26 +86,14 @@ function App() {
   const asps = [
     {
       title: 'A8.net',
-      usernameKey: 'usernameA8',
-      passwordKey: 'passwordA8',
-      username: value.usernameA8,
-      passwordA8: value.passwordA8,
       result: result.a8Result,
     },
     {
       title: 'afb',
-      usernameKey: 'usernameAfb',
-      passwordKey: 'passwordAfb',
-      username: value.usernameAfb,
-      password: value.passwordAfb,
       result: result.afbResult,
     },
     {
       title: 'もしもアフィリエイト',
-      usernameKey: 'usernameMoshimo',
-      passwordKey: 'passwordMoshimo',
-      username: value.usernameMoshimo,
-      password: value.passwordMoshimo,
       result: result.moshimoResult,
     },
   ];
@@ -132,11 +112,10 @@ function App() {
     // レスポンスが返ってくるまでloading状態にする
     setLoading(true);
 
-    const { usernameA8, usernameMoshimo, usernameAfb, passwordA8, passwordMoshimo, passwordAfb } = value;
     Promise.all([
-      httpRequest.httpRequest(SITE_IDS.A8, word, usernameA8, passwordA8),
-      httpRequest.httpRequest(SITE_IDS.AFB, word, usernameAfb, passwordAfb),
-      httpRequest.httpRequest(SITE_IDS.MOSHIMO, word, usernameMoshimo, passwordMoshimo),
+      httpRequest.httpRequest(SITE_IDS.A8, word),
+      httpRequest.httpRequest(SITE_IDS.AFB, word),
+      httpRequest.httpRequest(SITE_IDS.MOSHIMO, word),
     ]).then(result => {
       setResult({
         a8Result: result[0],
@@ -156,13 +135,6 @@ function App() {
       && (result.afbResult['code'] !== RESPONSE_STATUS.SUCCESS);
   };
 
-  const changeText = event => {
-    setValue({
-      ...value,
-      [event.target.name]: event.target.value
-    });
-  };
-
   return (
     <React.Fragment>
       {loadging && <Loading />}
@@ -178,27 +150,6 @@ function App() {
                   title={asp.title}
                   titleTypographyProps={{ align: 'center' }}
                 />
-                <CardContent>
-                  <TextField
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    placeholder="ユーザー名"
-                    name={asp.usernameKey}
-                    value={value.username}
-                    onChange={changeText}
-                  />
-                  <TextField
-                    type="password"
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    placeholder="パスワード"
-                    name={asp.passwordKey}
-                    value={value.password}
-                    onChange={changeText}
-                  />
-                </CardContent>
                 <CardContent className={classes.relative}>
                   <Typography
                     align="center"
