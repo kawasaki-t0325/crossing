@@ -5,7 +5,7 @@ const A8 = require('../sites/a8');
 const Moshimo = require('../sites/moshimo');
 const Afb = require('../sites/afb');
 
-module.exports = async (site, username, password, word) => {
+module.exports = async (site, word) => {
   const siteInfo = fetchSiteInfo(site);
   try {
     const browser = await puppeteer.launch({
@@ -26,8 +26,8 @@ module.exports = async (site, username, password, word) => {
     });
 
     await page.goto(siteInfo.loginUrl, { waitUntil: "networkidle2" });
-    await page.type(siteInfo.usernameBox, username);
-    await page.type(siteInfo.passwordBox, password);
+    await page.type(siteInfo.usernameBox, siteInfo.username);
+    await page.type(siteInfo.passwordBox, siteInfo.password);
     await Promise.all([
       page.waitForNavigation({ timeout: 20000, waitUntil: "networkidle2" }),
       page.click(siteInfo.loginButton),

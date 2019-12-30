@@ -1,5 +1,9 @@
+const functions = require('firebase-functions');
+
 module.exports = class A8 {
   constructor() {
+    this.username = functions.config().a8.username;
+    this.password = functions.config().a8.password;
     // ログインページURL
     this.loginUrl = 'https://www.a8.net/';
     // 入力項目

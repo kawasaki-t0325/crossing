@@ -7,7 +7,7 @@ const searchItem = require('./src/searchItem');
 admin.initializeApp();
 
 const runtimeOpts = {
-  memory: '1GB',
+  memory: '2GB',
 };
 
 exports.searchItem = functions.region('asia-northeast1').runWith(runtimeOpts).https.onRequest(async (request, response) => {

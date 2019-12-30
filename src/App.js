@@ -48,15 +48,16 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
   },
   title_wrapper: {
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(24),
   },
   title: {
     fontFamily: 'Georgia-BoldItalic',
   },
   main: {
-    marginTop: theme.spacing(4),
+    marginTop: theme.spacing(2),
   },
   button: {
+    margin: theme.spacing(2),
     padding: theme.spacing(2, 4),
   },
   relative: {
@@ -68,21 +69,16 @@ const useStyles = makeStyles(theme => ({
     marginLeft: -12,
   },
   textWarning: {
-    color: '#d50000'
-  }
+    color: '#d50000',
+  },
+  footer: {
+    marginTop: theme.spacing(8),
+  },
 }));
 
 function App() {
   const classes = useStyles();
   const [loadging, setLoading] = useState(true);
-  const [value, setValue] = useState({
-    usernameA8: '',
-    passwordA8: '',
-    usernameAfb: '',
-    passwordAfb: '',
-    usernameMoshimo: '',
-    passwordMoshimo: '',
-  });
   const [result, setResult] = useState({
     a8Result: {},
     afbResult: {},
@@ -94,26 +90,14 @@ function App() {
   const asps = [
     {
       title: 'A8.net',
-      usernameKey: 'usernameA8',
-      passwordKey: 'passwordA8',
-      username: value.usernameA8,
-      passwordA8: value.passwordA8,
       result: result.a8Result,
     },
     {
       title: 'afb',
-      usernameKey: 'usernameAfb',
-      passwordKey: 'passwordAfb',
-      username: value.usernameAfb,
-      password: value.passwordAfb,
       result: result.afbResult,
     },
     {
       title: 'もしもアフィリエイト',
-      usernameKey: 'usernameMoshimo',
-      passwordKey: 'passwordMoshimo',
-      username: value.usernameMoshimo,
-      password: value.passwordMoshimo,
       result: result.moshimoResult,
     },
   ];
@@ -132,35 +116,29 @@ function App() {
     // レスポンスが返ってくるまでloading状態にする
     setLoading(true);
 
-    const { usernameA8, usernameMoshimo, usernameAfb, passwordA8, passwordMoshimo, passwordAfb } = value;
     Promise.all([
-      httpRequest.httpRequest(SITE_IDS.A8, word, usernameA8, passwordA8),
-      httpRequest.httpRequest(SITE_IDS.AFB, word, usernameAfb, passwordAfb),
-      httpRequest.httpRequest(SITE_IDS.MOSHIMO, word, usernameMoshimo, passwordMoshimo),
+      httpRequest.httpRequest(SITE_IDS.A8, word),
+      httpRequest.httpRequest(SITE_IDS.AFB, word),
+      httpRequest.httpRequest(SITE_IDS.MOSHIMO, word),
     ]).then(result => {
       setResult({
         a8Result: result[0],
         afbResult: result[1],
         moshimoResult: result[2],
       });
-    });
 
-    if (isAllError()) {
-      localStorage.countDown();
-    }
+      if (isAllError(result)) {
+        localStorage.countDown();
+      }
+    });
   };
 
-  const isAllError = () => {
-    return (result.a8Result['code'] !== RESPONSE_STATUS.SUCCESS)
-      && (result.moshimoResult['code'] !== RESPONSE_STATUS.SUCCESS)
-      && (result.afbResult['code'] !== RESPONSE_STATUS.SUCCESS);
+  const isAllError = searchResult => {
+    return searchResult.filter(response => response.code === RESPONSE_STATUS.SUCCESS).length === 0;
   };
 
-  const changeText = event => {
-    setValue({
-      ...value,
-      [event.target.name]: event.target.value
-    });
+  const isResultEmpty = () => {
+    return Object.values(result).filter(projectResult => Object.keys(projectResult).length !== 0).length === 0;
   };
 
   return (
@@ -171,34 +149,33 @@ function App() {
       </Container>
       <Container className={classes.main} component="main">
         <Grid container spacing={5} justify="center">
-          {asps.map(asp => (
+          <Container className={classes.container} maxWidth="md">
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              autoFocus
+              placeholder="検索商品"
+              value={word}
+              onChange={event => setWord(event.target.value)}
+            />
+            <Button className={classes.button} disabled={loadging} variant="contained" color="primary" onClick={search}>
+              検索する
+            </Button>
+          </Container>
+          <Grid item xs={12}>
+            {message && <Typography align="center" className={classes.textWarning}>{message}</Typography>}
+          </Grid>
+        </Grid>
+        <Grid container spacing={5} justify="center">
+          {!isResultEmpty() && asps.map(asp => (
             <Grid item key={asp.title} xs={12} sm={6} md={4}>
               <Card>
                 <CardHeader
                   title={asp.title}
                   titleTypographyProps={{ align: 'center' }}
                 />
-                <CardContent>
-                  <TextField
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    placeholder="ユーザー名"
-                    name={asp.usernameKey}
-                    value={value.username}
-                    onChange={changeText}
-                  />
-                  <TextField
-                    type="password"
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    placeholder="パスワード"
-                    name={asp.passwordKey}
-                    value={value.password}
-                    onChange={changeText}
-                  />
-                </CardContent>
                 <CardContent className={classes.relative}>
                   <Typography
                     align="center"
@@ -227,26 +204,8 @@ function App() {
               </Card>
             </Grid>
           ))}
-          <Container className={classes.container} maxWidth="md">
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              autoFocus
-              placeholder="検索商品"
-              value={word}
-              onChange={event => setWord(event.target.value)}
-            />
-            <Button className={classes.button} disabled={loadging} variant="contained" color="primary" onClick={search}>
-              検索する
-            </Button>
-          </Container>
-          <Grid item xs={12}>
-            {message && <Typography align="center" className={classes.textWarning}>{message}</Typography>}
-          </Grid>
         </Grid>
-        <Box mt={5}>
+        <Box className={classes.footer} mt={5}>
           <Typography align="center">
             <Link href="https://twitter.com/memorandumrail">Twitter</Link>{' '}|{' '}
             <Link href="https://memorandumrail.com/contact">お問い合わせ</Link>
